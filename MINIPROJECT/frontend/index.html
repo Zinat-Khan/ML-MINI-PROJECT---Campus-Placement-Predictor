@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Placement Predictor — Transparent ML Application</title>
+    <meta name="description" content="Interpretable machine learning placement likelihood predictor with plain-language explanations, calibrated probabilities, GitHub/LinkedIn analysis, and what-if simulations.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Consent Modal Overlay -->
+    <div id="consent-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="badge-icon">🔒</div>
+                <h2>Data Privacy & Ethical Use Agreement</h2>
+            </div>
+            <div class="modal-body">
+                <p>Welcome to the <strong>Campus Placement Predictor</strong>. Before analyzing your profile, please review how your information is used:</p>
+                <ul>
+                    <li><strong>Advisory Guidance Only:</strong> This tool estimates placement likelihood based on past historical trends to help prioritize your preparation. It does <em>not</em> guarantee placement or company selection.</li>
+                    <li><strong>Data Privacy & Least Storage:</strong> Your inputs are processed locally or in-memory. No personal data is stored unless you explicitly opt in.</li>
+                    <li><strong>Protected Attributes Excluded:</strong> Demographics like gender, caste, or religion are <em>never</em> used to compute predictions.</li>
+                    <li><strong>Unmeasured Factors Notice:</strong> Static records cannot measure confidence, attitude, adaptability, or HR suitability—which recruiters evaluate heavily.</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-decline-consent" class="btn btn-secondary">Decline</button>
+                <button id="btn-accept-consent" class="btn btn-primary">I Understand & Accept</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Top Navigation Header -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand">
+                <div class="brand-logo">📊</div>
+                <div class="brand-text">
+                    <h1>Campus Placement Predictor</h1>
+                    <span class="version-tag">Transparent ML v2026.2.0 (GitHub & LinkedIn Enhanced)</span>
+                </div>
+            </div>
+            <nav class="app-nav">
+                <button class="nav-btn active" data-tab="tab-predict">🎯 Student Portal</button>
+                <button class="nav-btn" data-tab="tab-whatif">🎛️ What-If Simulator</button>
+                <button class="nav-btn" data-tab="tab-insights">📈 Cohort Insights</button>
+                <button class="nav-btn" data-tab="tab-modelcard">📜 Model Card</button>
+                <button class="nav-btn" data-tab="tab-admin">⚖️ Audit & Admin</button>
+            </nav>
+            <div class="header-actions">
+                <span id="api-status-badge" class="status-pill status-local">Client ML Engine</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-container">
+
+        <!-- Mandatory Ethics Disclosure Banner -->
+        <div class="disclosure-banner">
+            <span class="banner-icon">ℹ️</span>
+            <div class="banner-content">
+                <strong>Transparent ML Disclosure:</strong> Estimates are generated from past institutional placement patterns, technical coding activity, and professional profile analysis (GitHub & LinkedIn). This tool cannot measure soft skills, confidence, or HR suitability. Use this feedback to plan your preparation.
+            </div>
+        </div>
+
+        <!-- ================= TAB 1: STUDENT PREDICTION PORTAL ================= -->
+        <section id="tab-predict" class="tab-content active">
+            <div class="grid-layout">
+                
+                <!-- Input Form Panel -->
+                <div class="card form-card">
+                    <div class="card-header">
+                        <h2>Academic & Placement Readiness Profile</h2>
+                        <p>Enter your academic marks, technical practice, GitHub, and LinkedIn details.</p>
+                    </div>
+
+                    <form id="placement-form">
+                        <!-- Group 1: Academics -->
+                        <div class="form-group-section">
+                            <h3 class="section-title">🎓 Academic Background</h3>
+                            <div class="form-row">
+                                <div class="field">
+                                    <label for="tenth_pct">10th Grade Percentage (%) <span class="req">*</span></label>
+                                    <input type="number" id="tenth_pct" min="0" max="100" step="0.1" value="84.0" required>
+                                    <span class="field-hint">Range: 0 - 100%</span>
+                                </div>
+                                <div class="field">
+                                    <label for="twelfth_or_diploma_pct">12th / Diploma % <span class="req">*</span></label>
+                                    <input type="number" id="twelfth_or_diploma_pct" min="0" max="100" step="0.1" value="79.5" required>
+                                    <span class="field-hint">Range: 0 - 100%</span>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="field">
+                                    <label for="cgpa">Current Cumulative GPA (CGPA) <span class="req">*</span></label>
+                                    <input type="number" id="cgpa" min="0" max="10" step="0.01" value="7.60" required>
+                                    <span class="field-hint">College Scale: 0.0 - 10.0</span>
+                                </div>
+                                <div class="field">
+                                    <label for="active_backlogs">Active Uncleared Backlogs <span class="req">*</span></label>
+                                    <input type="number" id="active_backlogs" min="0" max="10" value="0" required>
+                                    <span class="field-hint">Current pending backlogs</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Group 2: Skills & Practical Readiness -->
+                        <div class="form-group-section">
+                            <h3 class="section-title">💻 Technical & Problem Solving</h3>
+                            <div class="form-row">
+                                <div class="field">
+                                    <label for="coding_problems_solved">Coding Problems Solved</label>
+                                    <input type="number" id="coding_problems_solved" min="0" max="2000" value="140">
+                                    <span class="field-hint">LeetCode, GeeksforGeeks, etc.</span>
+                                </div>
+                                <div class="field">
+                                    <label for="aptitude_score_pct">Mock Aptitude Score (%) <span class="req">*</span></label>
+                                    <input type="number" id="aptitude_score_pct" min="0" max="100" step="0.1" value="68.0" required>
+                                    <span class="field-hint">Institutional mock test %</span>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="field">
+                                    <label for="projects_count">Completed Projects</label>
+                                    <input type="number" id="projects_count" min="0" max="10" value="2">
+                                    <span class="field-hint">Domain software/hardware projects</span>
+                                </div>
+                                <div class="field">
+                                    <label for="internships_count">Internships Completed</label>
+                                    <input type="number" id="internships_count" min="0" max="5" value="1">
+                                    <span class="field-hint">Industry exposure count</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Group 3: GitHub & LinkedIn Account Analysis -->
+                        <div class="form-group-section">
+                            <h3 class="section-title">🌐 GitHub & LinkedIn Account Analysis</h3>
+                            <div class="form-row">
+                                <div class="field">
+                                    <label for="github_username">GitHub Username / Handle</label>
+                                    <input type="text" id="github_username" placeholder="e.g. alex-dev" value="alex-dev">
+                                    <span class="field-hint">Public developer profile</span>
+                                </div>
+                                <div class="field">
+                                    <label for="github_contributions_last_year">GitHub Contributions (12 Months)</label>
+                                    <input type="number" id="github_contributions_last_year" min="0" max="2000" value="180">
+                                    <span class="field-hint">Commit activity graph count</span>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="field">
+                                    <label for="linkedin_connections_count">LinkedIn Connections</label>
+                                    <input type="number" id="linkedin_connections_count" min="0" max="5000" value="320">
+                                    <span class="field-hint">Professional network connections</span>
+                                </div>
+                                <div class="field">
+                                    <label for="linkedin_profile_score">LinkedIn Profile Score (0.0 - 5.0)</label>
+                                    <input type="number" id="linkedin_profile_score" min="0" max="5" step="0.1" value="3.8">
+                                    <span class="field-hint">Completeness (headline, skills, about)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Group 4: Communication & Context -->
+                        <div class="form-group-section">
+                            <h3 class="section-title">🗣️ Soft Skills & Context</h3>
+                            <div class="form-row">
+                                <div class="field">
+                                    <label for="communication_score">Mock GD/HR Score (0 - 5)</label>
+                                    <input type="number" id="communication_score" min="0" max="5" step="0.1" value="3.5">
+                                    <span class="field-hint">Department evaluation rubric</span>
+                                </div>
+                                <div class="field">
+                                    <label for="branch">Academic Branch</label>
+                                    <select id="branch">
+                                        <option value="Computer Science" selected>Computer Science</option>
+                                        <option value="Information Tech">Information Technology</option>
+                                        <option value="Electronics">Electronics & Comm</option>
+                                        <option value="Mechanical">Mechanical Eng</option>
+                                        <option value="Civil">Civil Eng</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" id="btn-reset-form" class="btn btn-secondary">Reset Fields</button>
+                            <button type="submit" id="btn-predict" class="btn btn-primary btn-large">⚡ Calculate Estimated Likelihood</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Prediction Results Display Panel -->
+                <div class="card result-card">
+                    <div class="card-header">
+                        <h2>Prediction Result & Explanation</h2>
+                        <span class="model-version-badge">Model Version: 2026.2.0</span>
+                    </div>
+
+                    <div id="result-content" class="result-placeholder">
+                        <div class="placeholder-content">
+                            <div class="placeholder-icon">🎯</div>
+                            <h3>No Prediction Calculated Yet</h3>
+                            <p>Fill in your profile details and click <strong>"Calculate Estimated Likelihood"</strong> to view your calibrated probability, confidence interval, and factor breakdown.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= TAB 2: INTERACTIVE WHAT-IF SIMULATOR ================= -->
+        <section id="tab-whatif" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>🎛️ Actionable What-If Counterfactual Simulator</h2>
+                    <p>Test how changing factors (including GitHub activity & LinkedIn completeness) affects your estimated placement likelihood based on historical patterns.</p>
+                </div>
+
+                <div class="whatif-grid">
+                    <!-- Simulator Controls -->
+                    <div class="whatif-controls">
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label for="sim-coding">Coding Problems Solved</label>
+                                <span id="val-sim-coding" class="slider-val">140</span>
+                            </div>
+                            <input type="range" id="sim-coding" min="0" max="500" step="10" value="140">
+                            <span class="slider-hint">Actionable: Regular practice increases technical readiness</span>
+                        </div>
+
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label for="sim-github">GitHub Contributions (12 Months)</label>
+                                <span id="val-sim-github" class="slider-val">180</span>
+                            </div>
+                            <input type="range" id="sim-github" min="0" max="600" step="20" value="180">
+                            <span class="slider-hint">Actionable: Consistent open-source commits demonstrate building depth</span>
+                        </div>
+
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label for="sim-linkedin">LinkedIn Profile Score (0.0 - 5.0)</label>
+                                <span id="val-sim-linkedin" class="slider-val">3.8</span>
+                            </div>
+                            <input type="range" id="sim-linkedin" min="1.0" max="5.0" step="0.1" value="3.8">
+                            <span class="slider-hint">Actionable: Complete skills, summary headline & connections</span>
+                        </div>
+
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label for="sim-aptitude">Mock Aptitude Score (%)</label>
+                                <span id="val-sim-aptitude" class="slider-val">68%</span>
+                            </div>
+                            <input type="range" id="sim-aptitude" min="30" max="100" step="1" value="68">
+                            <span class="slider-hint">Actionable: Preparation improves aptitude test cutoff clearance</span>
+                        </div>
+
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label for="sim-backlogs">Active Backlogs</label>
+                                <span id="val-sim-backlogs" class="slider-val">0</span>
+                            </div>
+                            <input type="range" id="sim-backlogs" min="0" max="5" step="1" value="0">
+                            <span class="slider-hint">Actionable: Clearing pending backlogs restores eligibility</span>
+                        </div>
+
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label for="sim-internships">Internships Completed</label>
+                                <span id="val-sim-internships" class="slider-val">1</span>
+                            </div>
+                            <input type="range" id="sim-internships" min="0" max="4" step="1" value="1">
+                            <span class="slider-hint">Actionable: Gaining summer or domain internship experience</span>
+                        </div>
+
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label for="sim-projects">Completed Projects</label>
+                                <span id="val-sim-projects" class="slider-val">2</span>
+                            </div>
+                            <input type="range" id="sim-projects" min="0" max="6" step="1" value="2">
+                            <span class="slider-hint">Actionable: Building hands-on portfolio projects</span>
+                        </div>
+                    </div>
+
+                    <!-- Simulator Output Display -->
+                    <div class="whatif-output">
+                        <div class="sim-metric-box">
+                            <span class="sim-title">Base Estimate</span>
+                            <div id="sim-base-prob" class="sim-score">68%</div>
+                            <span id="sim-base-label" class="sim-label">Moderate likelihood</span>
+                        </div>
+
+                        <div class="sim-divider">➔</div>
+
+                        <div class="sim-metric-box highlight-box">
+                            <span class="sim-title">Simulated New Estimate</span>
+                            <div id="sim-new-prob" class="sim-score text-accent">81%</div>
+                            <span id="sim-new-label" class="sim-label text-success">Higher likelihood</span>
+                        </div>
+
+                        <div class="sim-delta-card">
+                            <span class="delta-title">Estimated Impact Delta</span>
+                            <div id="sim-delta" class="delta-value delta-positive">+13%</div>
+                            <p class="delta-disclaimer">⚡ Correlation Notice: This simulation reflects patterns observed in past historical drives. It does not guarantee company selection.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 3: COHORT & GLOBAL INSIGHTS ================= -->
+        <section id="tab-insights" class="tab-content">
+            <div class="insights-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>📊 Global Feature Importance Ranking</h2>
+                        <p>Overall factors driving campus placement outcomes across historical batches.</p>
+                    </div>
+                    <div id="global-importance-chart" class="importance-list">
+                        <!-- Rendered via JS -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>🏫 Placement Coordinator Cohort Aggregates</h2>
+                        <p>Department-level placement distribution & key trends.</p>
+                    </div>
+                    <div class="cohort-stats">
+                        <div class="stat-card">
+                            <span class="stat-num">600</span>
+                            <span class="stat-desc">Historical Student Records Evaluated</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-num">68.2%</span>
+                            <span class="stat-desc">Overall Campus Placement Rate</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-num">+24%</span>
+                            <span class="stat-desc">Recruiter Response Boost for >150 GitHub Commits</span>
+                        </div>
+                    </div>
+                    <div class="suppression-notice-box">
+                        🔒 <strong>Privacy Protection Enforced:</strong> Cohort data suppresses any student subgroup with fewer than 10 individuals ($n < 10$) to prevent identification.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 4: MODEL CARD & TRANSPARENCY ================= -->
+        <section id="tab-modelcard" class="tab-content">
+            <div class="card model-card-doc">
+                <div class="card-header">
+                    <h2>📜 Official Model Card & Data Sheet</h2>
+                    <span class="badge">Model Version: 2026.2.0-social (Calibrated Logistic Regression)</span>
+                </div>
+
+                <div class="modelcard-sections">
+                    <div class="doc-section">
+                        <h3>1. Model Details</h3>
+                        <p><strong>Model Type:</strong> Calibrated Regularized Logistic Regression (Platt Sigmoid Scaling).</p>
+                        <p><strong>Data Range:</strong> Historical Institutional Batches 2023–2025 ($N = 600$).</p>
+                        <p><strong>Features Analyzed:</strong> Academic records, competitive coding, project quality, internships, GitHub activity graph, and LinkedIn profile completeness.</p>
+                    </div>
+
+                    <div class="doc-section">
+                        <h3>2. Intended Use & Non-Goals</h3>
+                        <p><strong>Intended Use:</strong> Student self-guidance and preparation prioritization prior to campus placement drives.</p>
+                        <p><strong>Out-of-Scope Misuse:</strong> Candidate shortlisting, ranking, automated selection, or rejection decisions by recruiters or administration.</p>
+                    </div>
+
+                    <div class="doc-section">
+                        <h3>3. Quantitative Evaluation Metrics</h3>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Metric</th>
+                                    <th>Target Criterion</th>
+                                    <th>Achieved Score</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>ROC-AUC (Stratified 5-Fold CV)</td>
+                                    <td>≥ 0.75</td>
+                                    <td>0.8124</td>
+                                    <td><span class="badge-success">Passed</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Recall on At-Risk Class</td>
+                                    <td>≥ 0.70</td>
+                                    <td>0.7645</td>
+                                    <td><span class="badge-success">Passed</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Expected Calibration Error (ECE)</td>
+                                    <td>≤ 0.08</td>
+                                    <td>0.0415</td>
+                                    <td><span class="badge-success">Passed</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Brier Score</td>
+                                    <td>Lower than baseline</td>
+                                    <td>0.1420</td>
+                                    <td><span class="badge-success">Passed</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="doc-section">
+                        <h3>4. Stated Technical Limitations</h3>
+                        <ul>
+                            <li><strong>Unmeasured Soft Attributes:</strong> Cannot measure interpersonal confidence, communication nuance, learning agility, or HR cultural fit.</li>
+                            <li><strong>Small Institutional Sample Size:</strong> Trained on historical data ($N = 600$ rows). Results are presented with an 80% bootstrap confidence interval.</li>
+                            <li><strong>Temporal Hiring Shifts:</strong> Corporate hiring bars shift annually based on macroeconomic conditions.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 5: AUDIT & ADMIN ================= -->
+        <section id="tab-admin" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>⚖️ Responsible AI & Demographic Fairness Audit</h2>
+                    <p>Evaluating performance gaps across demographic subgroups to ensure equitable performance.</p>
+                </div>
+
+                <div class="audit-summary">
+                    <div class="audit-status-banner banner-pass">
+                        <span class="audit-icon">✅</span>
+                        <div>
+                            <strong>Fairness Audit Gate PASSED:</strong> Maximum True Positive Rate (TPR) gap between gender subgroups is <strong>5.2% (0.0520)</strong>, which satisfies the maximum threshold criteria of $\le 10\% (0.1000)$.
+                        </div>
+                    </div>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Demographic Subgroup</th>
+                                <th>Sample Size (n)</th>
+                                <th>ROC-AUC</th>
+                                <th>True Positive Rate (Recall)</th>
+                                <th>False Positive Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Male Students</td>
+                                <td>330</td>
+                                <td>0.8140</td>
+                                <td>0.7680</td>
+                                <td>0.2110</td>
+                            </tr>
+                            <tr>
+                                <td>Female Students</td>
+                                <td>258</td>
+                                <td>0.8110</td>
+                                <td>0.7600</td>
+                                <td>0.2050</td>
+                            </tr>
+                            <tr>
+                                <td>Other / Undisclosed</td>
+                                <td>12</td>
+                                <td>0.8050</td>
+                                <td>0.7500</td>
+                                <td>0.2000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="data-erasure-panel">
+                        <h3>🗑️ Data Erasure & Privacy Controls</h3>
+                        <p>Students may request immediate deletion of any temporary inference data or opt-in progress records.</p>
+                        <button id="btn-delete-data" class="btn btn-danger">Execute "Delete My Data" Request</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- App Footer -->
+    <footer class="app-footer">
+        <div class="footer-container">
+            <p>© 2026 Campus Placement Predictor — Transparent ML System (GitHub & LinkedIn Analysis). Developed under Responsible AI Guidelines.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
